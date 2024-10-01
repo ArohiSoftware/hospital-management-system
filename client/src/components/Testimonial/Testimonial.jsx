@@ -55,7 +55,7 @@ export default function Testimonial() {
 
     return (
         <>
-            <div className='bg-red-50 py-10'>
+            <div className=' py-10'>
                 <div>
                     <h1 className='font-semibold text-3xl text-center mb-3'>Patients Testimonial</h1>
                     <p className='text-center text-gray-500'>Let's see what our happy patients say</p>
@@ -70,7 +70,7 @@ export default function Testimonial() {
                     </button>
 
                     {itemsToDisplay.map((data, index) => (
-                        <div key={index} className='flex h-40 w-80 bg-white rounded-lg shadow-lg m-2'>
+                        <div key={index} className='flex h-44 w-80 bg-white rounded-lg shadow-lg m-2'>
                             <div className='h-20 w-20'>
                                 <div className='h-16 w-16 bg-yellow-300 rounded-full relative m-4'>
                                     <img className='h-16 w-16 rounded-full absolute left-2' src={data.patient_img} alt={data.patient_name} />
@@ -80,7 +80,7 @@ export default function Testimonial() {
                                 <h2 className='font-semibold'>{data.patient_name}</h2>
                                 <p className='text-xs text-gray-500'>{data.patient_category}</p>
                                 <img className='mt-[-22px] ml-[-30px] h-20' src={star} alt="Rating" />
-                                <p className='text-xs mt-[-15px] text-gray-500'>{data.patient_feedback}</p>
+                                <p className='text-sm mt-[-15px] text-gray-500'>{data.patient_feedback}</p>
                             </div>
                         </div>
                     ))}
