@@ -76,7 +76,7 @@ export default function PayOption() {
           <div className='flex  h-24 items-center lg:w-40 m-auto'>
             <h1 className='text-white text-xl font-semibold flex m-auto'>Most popular&nbsp; <img src={sparkler} className='h-6 m-' /> </h1>
           </div>
-          <div className='bg-purple-50 p-3 lg:h-[62vh] w-[300px] m-auto rounded-lg'>
+          <div className='bg-purple-50 p-3 lg:h-[72vh] w-[300px] m-auto rounded-lg'>
             <div className='bg-white lg:h-36 text-center '>
             <h2 className="text-2xl font-bold p-5">Essential</h2>
           <p className="text-5xl font-bold">$599 <span className="text-xl font-semibold">/Year</span></p>
