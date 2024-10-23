@@ -14,7 +14,7 @@ enum Role {
 
 
 model Marketing {
-  id        BigInt    @id
+  id        BigInt    @id @default(autoincrement())
   name      String
   phone     String    @unique
   email     String?   @unique

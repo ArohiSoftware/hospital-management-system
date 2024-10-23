@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
+import prisma from "../../../db/default.js";
 
-const prisma = new PrismaClient();
-
+import bcrypt from 'bcrypt'
 // Create a new Marketing record
 export const createMarketing = async (req, res) => {
   try {
@@ -16,7 +14,7 @@ export const createMarketing = async (req, res) => {
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newMarketing = await prisma.marketing.create({
+    let newMarketing = await  prisma.marketing.create({
       data: {
         name,
         phone,
@@ -27,7 +25,7 @@ export const createMarketing = async (req, res) => {
         hospital,
       },
     });
-
+newMarketing.id = newMarketing.id.toString();
     res.status(201).json(newMarketing);
   } catch (error) {
     console.error(error);
