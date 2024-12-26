@@ -9,30 +9,38 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function Login() {
+
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
+
   const dispatch = useDispatch();
   const loginState = useSelector((state) => state.login);
   console.log("Login State:", loginState); // Add this for debugging
   const navigate = useNavigate();
+
+  
+  //Handel LOgin Function//
+
   const handleLogin = (e) => {
     e.preventDefault();
-  
+
     // Check for empty fields before dispatching
     if (!userId || !password) {
       alert('Please fill in all fields');
       return;
     }
+
   
-    console.log('Attempting login with:', userId, password); // For debugging
-  
+
     dispatch(login(userId, password, (data) => {
       console.log('Callback data:', data);
       toast('Login successful!');
-      navigate('/dashboard'); // Uncomment if ready to redirect
-    }));
+      navigate('/dashboard'); // Redirect after successful login
+    }, rememberMe));
   };
-  
+
 
   return (
     <>
@@ -45,29 +53,23 @@ export default function Login() {
             <div className="border border-blue-200 h-[65vh] sm:h-[550px] lg:w-[450px] w-[650px] p-2 m-auto shadow-lg shadow-blue-300/50 rounded-lg">
               <div>
                 <img src={sailogo} className="h-40 block m-auto" />
-                <h1 className="text-3xl font-semibold text-center mb-6">
-                  Login
-                </h1>
+                <h1 className="text-3xl font-semibold text-center mb-6">Login</h1>
               </div>
               <form className="m-auto w-96" onSubmit={handleLogin}>
-                <label className="block text-zinc-500 dark:text-zinc-500 mb-2">
-                  User Id
-                </label>
+                <label className="block text-zinc-500 mb-2">User Id</label>
                 <input
                   type="text"
                   placeholder="User id"
                   value={userId}
                   onChange={(e) => setUserId(e.target.value)}
-                  className="w-[380px] p-2 border-zinc-300 text-black rounded-lg mb-4 border-[1px] dark:bg-input transition duration-150 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  className="w-[380px] p-2 border-zinc-300 text-black rounded-lg mb-4 border-[1px] transition duration-150 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                   required
                 />
-                <label className="block text-zinc-500 dark:text-zinc-500 mb-2">
-                  Password
-                </label>
-                <div className="flex m-auto mb-4 border-2 rounded-lg h-[6vh] items-center dark:bg-input transition duration-150 hover:border-blue-500">
+                <label className="block text-zinc-500 mb-2">Password</label>
+                <div className="flex m-auto mb-4 border-2 rounded-lg h-[6vh] items-center transition duration-150 hover:border-blue-500">
                   <input
                     type="password"
-                    placeholder="@#*%"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="relative w-[380px] h-[4vh] p-2 outline-0 text-black border-r-2"
@@ -75,10 +77,15 @@ export default function Login() {
                   />
                   <img src={pass} className="h-5 block right-64 m-3" />
                 </div>
+
                 <div className="flex justify-between mb-3">
-                  <div className="flex ">
-                    <input type="checkbox" />
-                    <p className="text-sm ml-3 text-gray-500"> Remember me</p>
+                  <div className="flex">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
+                    <p className="text-sm ml-3 text-gray-500">Remember me</p>
                   </div>
                   <div>
                     <a href="#">Forgot Password?</a>

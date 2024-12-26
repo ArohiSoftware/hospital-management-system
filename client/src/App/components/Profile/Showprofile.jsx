@@ -84,7 +84,7 @@ const user =userdata.userprofile;
     const confirmDelete = window.confirm('Are you sure you want to delete your account? This action cannot be undone.');
     try {
       if (confirmDelete) {
-        const response = await axiosInstanceApp.delete(`staff/delete/${user._id}`)
+        const response = await axiosInstanceApp.delete(`staff/delete/${user.id}`)
 
         toast.success('Account deleted successfully!');
         console.log("user delted", response)

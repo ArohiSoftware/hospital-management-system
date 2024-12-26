@@ -62,8 +62,10 @@ export const getprofile = () => async (dispatch) => {
   dispatch({ type: GET_PROFILEID_REQUEST });
 
   try {
-    const token = localStorage.getItem('accessToken');
-    console.log("token", token)
+    // Try to get the token from sessionStorage first, then from localStorage if not found
+    const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
+    console.log("token", token);
+
     if (!token) {
       throw new Error('No token found');
     }
@@ -72,15 +74,12 @@ export const getprofile = () => async (dispatch) => {
       headers: {
         "Authorization": `Bearer ${token}`
       }
-
     });
 
-
-    console.log("get profile", response.data)
+    console.log("get profile", response.data);
 
     dispatch({ type: GET_PROFILEID_SUCCESS, payload: response.data });
   } catch (error) {
-
     dispatch({
       type: GET_PROFILEID_FAILURE,
       payload: error.message || 'Something went wrong!',

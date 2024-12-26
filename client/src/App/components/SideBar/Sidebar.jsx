@@ -5,28 +5,29 @@ import { useDispatch } from "react-redux";
 
 const Menu = ({ menuItems }) => {
   const navigate = useNavigate();
-
+  const location = useLocation(); // Required to track the current path
   const dispatch = useDispatch();
-  // Initialize activeIndex from localStorage or default to 0
+
   const [activeIndex, setActiveIndex] = useState(null);
+
   useEffect(() => {
-    const pathSegments = location.pathname.split('/').filter(Boolean); // Remove any empty strings
-    
+    const pathSegments = location.pathname.split('/').filter(Boolean); // Split path and remove empty strings
     const currentIndex = menuItems.findIndex(item =>
       pathSegments.some(segment => item.path.includes(segment))
     );
-    
     setActiveIndex(currentIndex !== -1 ? currentIndex : 0);
   }, [location.pathname, menuItems]);
 
   const handleClick = (index, path) => {
+    if (menuItems[index].label === 'Logout') {
+      localStorage.removeItem("accessToken"); // Remove token
+      sessionStorage.removeItem("accessToken"); // Remove token
+      console.log("Token after logout:", localStorage.getItem("accessToken")); // Verify token removal
+    }
     setActiveIndex(index);
-   if(menuItems[index].label==='Logout')
-   {
-    
-   }
-    navigate(path);
+    navigate(path); // Navigate to the clicked item's path
   };
+
   return (
     <ul className="space-y-2">
       {menuItems?.map((item, index) => (
@@ -57,3 +58,4 @@ const Sidebar = ({ menuItems }) => {
 };
 
 export default Sidebar;
+

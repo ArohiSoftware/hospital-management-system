@@ -15,11 +15,21 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const userdata = useSelector((state) => state.profile);
 const user =userdata.userprofile;
-  console.log("userdata" , userdata)
+console.log(user);
+  console.log("Userdata" , userdata)
 
   useEffect(() => {
-    console.log("get profile called ")
-    dispatch(getprofile());
+    // Check if token is in sessionStorage or localStorage
+    const token = sessionStorage.getItem("accessToken") || localStorage.getItem("accessToken");
+
+    if (token) {
+      // Token found, dispatch action to get user profile
+      console.log("get profile called");
+      dispatch(getprofile());
+    } else {
+      console.log("Token not found");
+      // Handle case where token is missing (e.g., redirect to login)
+    }
   }, [dispatch]);
   
  // Safe checks for user data
