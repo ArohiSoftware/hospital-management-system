@@ -4,9 +4,12 @@ import prisma from '../../../db/index.js';
 import {setTokens} from '../../../middleware/generateToken.js'
 
 export async function login (req, res) {
+  
 
   const { password, userId } = req.body;
-  console.log(req.body);
+
+  console.log("hello");
+  
 
   try {
     // Retrieve the staff member from the database
@@ -18,6 +21,8 @@ export async function login (req, res) {
         ],
       },
     });
+    console.log(staffMember);
+    
     if (!staffMember) {
       return res.status(404).json({ error: 'Staff member not found' });
     }

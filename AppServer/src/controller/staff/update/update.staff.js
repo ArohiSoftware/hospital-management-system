@@ -15,23 +15,16 @@ console.log("staffid",id)
         return res.status(400).json({ error: 'Invalid staff ID' });
     }
 
-    const { fullName, specialization, user, password, type, contact_number, email, qualifications, department  , role} = req.body;
+    const { fullName, specialization,  type, contact_number, email, qualifications, department  , role} = req.body;
 
     console.log('Request body:', req.body);
     try {
-        // Combine the password with the secret key
-        const passwordWithKey = `${password}${SECRET_KEY}`;
-
-        // Hash the combined password
-        const hashedPassword = await bcrypt.hash(passwordWithKey, SALT_ROUNDS);
-
+        
         const updatedStaff = await prisma.staff.update({
             where: { id: parseInt(id) },
             data: {
                 fullName,
                 specialization,
-                user,
-                password: hashedPassword, // Save the hashed password
                 type,
                 contact_number,
                 email,

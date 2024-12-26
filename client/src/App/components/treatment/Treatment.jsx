@@ -138,13 +138,17 @@ const Treatment = () => {
 
   const handleSubmit = (path) => {
     const { appointment_id,follow_up_date,diagnosis,doctor_id,patient_id,treatment_plan,slot } = formData;
-    if(slot)
-    {
-  const [hours, minutes] = slot.split(":");
-  const period = hours >= 12 ? "PM" : "AM";
-  const formattedHours = hours % 12 || 12; // Convert "0" or "12+" hours to 12-hour format
-  const formattedValue = `${formattedHours}:${minutes} ${period}`;
-  formData.slot=formattedValue
+    if (slot) {
+      // Check if the slot is already formatted
+      const isFormatted = /\d{1,2}:\d{2} (AM|PM)/.test(slot);
+      
+      if (!isFormatted) {
+        const [hours, minutes] = slot.split(":");
+        const period = hours >= 12 ? "PM" : "AM";
+        const formattedHours = hours % 12 || 12; // Convert "0" or "12+" hours to 12-hour format
+        const formattedValue = `${formattedHours}:${minutes} ${period}`;
+        formData.slot = formattedValue;
+      }
     }
     if (!appointment_id|| !diagnosis || !doctor_id || !patient_id || !treatment_plan ) {
       toast.warning("Please fill in all required fields.");
@@ -293,7 +297,7 @@ const Treatment = () => {
             <div className='flex space-x-3 justify-start'>
               <button
                 type="button"
-                onClick={() => {  handleSubmit('/medication-file'); }}
+                onClick={() => {  console.log("clicked"); }}
                 className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-green-600"
               >
                 Medication file
