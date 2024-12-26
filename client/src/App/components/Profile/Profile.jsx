@@ -63,123 +63,123 @@ const Profile = () => {
   return (
 
           <div className="flex-1 overflow-y-auto px-20 mt-10 rounded-lg m-4">
-            <h1 className="text-2xl font-bold text-center mb-6 ">Profile Creation</h1>
+            <h1 className="text-2xl font-bold text-center mb-6 dark:text-white">Profile Creation</h1>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-4 bg-[#E4D7D7] p-2">Basic Information:</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="fullName" className="block mb-1 text-sm font-medium"> Name</label>
+                    <label htmlFor="fullName" className="block mb-1 text-sm font-medium dark:text-gray-100"> Name</label>
                     <input
                       type="text"
                       id="fullName"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter Full Name"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="specialization" className="block mb-1 text-sm font-medium">Specialization</label>
+                    <label htmlFor="specialization" className="block mb-1 text-sm font-medium dark:text-gray-100">Specialization</label>
                     <input
                       type="text"
                       id="specialization"
                       name="specialization"
                       value={formData.specialization}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter Specialization"
                      
                     />
                   </div>
                   <div >
-                    <label htmlFor="user" className="block mb-1 text-sm font-medium">User Name</label>
+                    <label htmlFor="user" className="block mb-1 text-sm font-medium dark:text-gray-100">User Name</label>
                     <input
                       type="text"
                       id="user"
                       name="user"
                       value={formData.user}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter username"
                       required
                     />
                   </div>
                   <div >
-                    <label htmlFor="address" className="block mb-1 text-sm font-medium">Password</label>
+                    <label htmlFor="address" className="block mb-1 text-sm font-medium dark:text-gray-100">Password</label>
                     <input
                       type="password"
                       id="password"
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange} 
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter password"
                       required
                     />
                   </div>
                   <div >
-                    <label htmlFor="type" className="block mb-1 text-sm font-medium">Profession</label>
+                    <label htmlFor="type" className="block mb-1 text-sm font-medium dark:text-gray-100">Profession</label>
                     <input
                       type="text"
                       id="type"
                       name="type"
                       value={formData.type}
                       onChange={handleInputChange} 
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter profession type (ex. Doctor , Nurse)"
                       required
                     />
                   </div>
                   <div >
-                    <label htmlFor="contact_number" className="block mb-1 text-sm font-medium">Contact No</label>
+                    <label htmlFor="contact_number" className="block mb-1 text-sm font-medium dark:text-gray-100">Contact No</label>
                     <input
                       type="number"
                       id="contact_number"
                       name="contact_number"
                       value={formData.contact_number}
                       onChange={handleInputChange} 
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter Contact No"
                       required
                     />
                   </div>
                   <div >
-                    <label htmlFor="email" className="block mb-1 text-sm font-medium">Email</label>
+                    <label htmlFor="email" className="block mb-1 text-sm font-medium dark:text-gray-100">Email</label>
                     <input
                       type="email"
                       id="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange} 
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter Email Id"
                       required
                     />
                   </div>
                   <div >
-                    <label htmlFor="qualifications" className="block mb-1 text-sm font-medium">Qualification</label>
+                    <label htmlFor="qualifications" className="block mb-1 text-sm font-medium dark:text-gray-100">Qualification</label>
                     <input
                       type="text"
                       id="qualifications"
                       name="qualifications"
                       value={formData.qualifications}
                       onChange={handleInputChange} 
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
                       placeholder="Enter qualifications"
                       required
                     />
                   </div>
                   <div>
-                    <label htmlFor="department" className="block mb-1 text-sm font-medium">Department</label>
+                    <label htmlFor="department" className="block mb-1 text-sm font-medium dark:text-gray-100">Department</label>
                     <select
                       id="department"
                       name="department"
                       value={formData.department}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
                       required
                     >
                       <option value="">Select Department</option>
@@ -192,13 +192,13 @@ const Profile = () => {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="role" className="block mb-1 text-sm font-medium">Role</label>
+                    <label htmlFor="role" className="block mb-1 text-sm font-medium dark:text-gray-100">Role</label>
                     <select
                       id="role"
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="w-full p-2 border rounded"
+                      className="w-full p-2 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
                       required
                     >
                       <option value="">Select Role</option>
