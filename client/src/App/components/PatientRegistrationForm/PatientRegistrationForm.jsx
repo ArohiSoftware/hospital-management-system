@@ -87,11 +87,11 @@ const PatientRegistrationForm = () => {
   
   return (
 
-          <div className="flex-1 overflow-y-auto px-20 mt-10 rounded-lg m-4">
+          <div className="flex-1 overflow-y-50 px-20 mt-10 rounded-lg m-4">
             <h1 className="text-2xl font-bold text-center mb-6 dark:text-white">Patient Registration</h1>
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-4 bg-[#E4D7D7] p-2">Basic Information:</h2>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="patientName" className="block mb-1 text-sm font-medium dark:text-gray-100">Patient Name</label>
@@ -395,7 +395,7 @@ const PatientRegistrationForm = () => {
               <div className="text-center">
                 <button 
                   type="submit" 
-                  className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors"
+                  className="bg-green-500 shadow-lg shadow-green-500/50 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors"
                 >
                   Submit
                 </button>

@@ -12,7 +12,6 @@ const Ipd = () => {
     { icon: 'fa-solid fa-chart-simple', label: 'Treatment',path:'' },
     { icon: 'fa-brands fa-slack', label: 'Billing',path:'' },
     { icon: 'fa-solid fa-user', label: 'All Appointment' ,path:''},
-    { icon: 'fa-solid fa-home', label: 'Dashboard' ,path:''},
     { icon: 'fa-solid fa-lock', label: 'Logout',path:'' },
   ];
   return (

@@ -5,8 +5,8 @@ export default function AppointmentList() {
 
   return (
     <div>
-      <div className=" text-lg my-3 bg-[#E4D7D7] text-gray-600 font-bold py-1 px-2">
-      <h1 className="text-xl font-bold px-3 ">AppointmentList</h1>
+      <div className="text-lg mt-10 my-3 bg-orange-500 shadow-lg shadow-orange-500/50 text-white text-center font-bold py-1 px-2">
+      <h1 className="text-xl font-bold px-3 ">Appointment List</h1>
 
      </div>
      <div className="  flex justify-center max-w-screen-2xl mx-auto">
@@ -20,11 +20,10 @@ export default function AppointmentList() {
       <div className="mb-4 flex justify-center  space-x-2">
      <input
       type="text"
-      placeholder="Search Patien
-      t Name or D"
+      placeholder="Search Patient Name or Doctor's Name"
       className="w-2/5 p-2 border rounded-xl dark:text-white dark:bg-gray-800"
      />
-     <button className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition-colors">View</button>
+     <button className="bg-green-500 shadow-lg shadow-green-500/50 text-white px-4 py-2 rounded-xl hover:bg-green-600 transition-colors">View</button>
     </div>
       
     </div>

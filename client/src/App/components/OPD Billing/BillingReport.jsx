@@ -107,7 +107,7 @@ const BillingReport = () => {
 
         {/* Search Input and Button */}
         <div className="flex justify-center mt-4 px-6">
-          <button className="ml-4 bg-blue-500 text-white px-6 py-2 rounded-lg   hover:bg-blue-600 transition-colors">
+          <button className="ml-4 bg-blue-500 shadow-lg shadow-blue-500/50 text-white px-6 py-2 rounded-lg   hover:bg-blue-600 transition-colors">
             Search
           </button>
         </div>
@@ -161,7 +161,7 @@ const BillingReport = () => {
         {/* <hr className="border-black border-1" /> */}
 
         <div className="px-6 py-4 flex justify-center">
-          <button className="mt-6 bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+          <button className="mt-6 bg-green-500 shadow-lg shadow-green-500/50 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
             Create Billing Report
           </button>
         </div>

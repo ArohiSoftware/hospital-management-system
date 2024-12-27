@@ -48,7 +48,7 @@ const Menu = ({ menuItems }) => {
 const Sidebar = ({ menuItems }) => {
   return (
     <div className="w-64 bg-white h-full shadow-lg flex flex-col p-6 rounded-lg dark:bg-gray-700">
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center mb-6">  
         <img src={Logo} alt="Hospital Logo" className="h-20 w-20" />
       </div>
       <Menu menuItems={menuItems} />

@@ -12,7 +12,6 @@ const Opd = () => {
     { icon: 'fa-solid fa-chart-simple', label: 'Treatment' ,path:'Treatment' },
     { icon: 'fa-brands fa-slack', label: 'Billing',path:'Billing'  },
     { icon: 'fa-solid fa-user', label: 'All Appointment' ,path:'AppointmentList' },
-    { icon: 'fa-solid fa-home', label: 'Dashboard',path:'/dashboard'  },
     { icon: 'fa-solid fa-lock', label: 'Logout',path:''  },
   ];
   return (

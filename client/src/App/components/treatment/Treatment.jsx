@@ -48,9 +48,9 @@ const Treatment = () => {
   };
 
   return (
-    <div className="flex-1 rounded-lg  pt-2 flex flex-col items-center justify-start">
-      <form onSubmit={handleSubmit} className="mt-0 bg-opacity-60 rounded-lg p-6 w-full ">
-        <h2 className="text-lg my-8 bg-[#E4D7D7] text-gray-600 font-bold py-1 px-2">Add New Treatment</h2>
+    <div className="flex-1 rounded-lg pt-2 flex flex-col items-center justify-start">
+      <form onSubmit={handleSubmit} className="mt-0 bg-opacity-60 rounded-lg p-6 w-full">
+        <h2 className="text-lg my-8 bg-orange-500 shadow-lg shadow-orange-500/50 text-white text-center font-bold py-1 px-2">Add New Treatment</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Appointment ID</label>
@@ -105,7 +105,7 @@ const Treatment = () => {
             <textarea
               name="treatmentPlan"
               className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
-              rows="4"
+              rows="3"
               value={formData.treatmentPlan}
               onChange={handleChange}
               placeholder="Enter Treatment Plan"
@@ -114,12 +114,26 @@ const Treatment = () => {
 
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Report File</label>
-            <input
-              type="file"
-              name="reportFile"
-              className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <input
+                type="file"
+                name="reportFile"
+                id="reportFile"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                onChange={handleChange}
+              />
+              <label
+                htmlFor="reportFile"
+                className="flex w-full justify-center bg-blue-500 shadow-lg shadow-blue-500/50 text-white py-2 rounded cursor-pointer hover:bg-blue-600 transition-colors"
+              >
+                Choose File
+              </label>
+              {formData.reportFile && (
+                <span className="absolute mt-3 ml-0 text-sm text-gray-500">
+                  {formData.reportFile.name}
+                </span>
+              )}
+            </div>
           </div>
 
           <div>
@@ -135,25 +149,25 @@ const Treatment = () => {
 
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Fill reports</label>
-            <div className='flex space-x-3 justify-start'>
+            <div className='flex space-x-3 justify-between'>
               <button
                 type="button"
                 onClick={() => {  handleSubmit('/medication-file'); }}
-                className="bg-blue-400 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
+                className="w-1/3 bg-cyan-500 shadow-lg shadow-cyan-500/50 text-white px-4 py-2 rounded hover:bg-cyan-600 transition-colors"
               >
                 Medication file
               </button>
               <button
                 type="button"
                 onClick={() => {  handleSubmit('/medical-report'); }}
-                className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
+                className="w-1/3 bg-blue-500 shadow-lg shadow-blue-500/50 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
               >
                 Medical Report
               </button>
               <button
                 type="button"
                 onClick={() => { handleSubmit('/lab-report'); }}
-                className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors"
+                className="w-1/3 bg-indigo-500 shadow-lg shadow-indigo-500/50 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors"
               >
                 Lab Report
               </button> 
@@ -164,7 +178,7 @@ const Treatment = () => {
             <button
               type="button"
               onClick={() => {handleSubmit('/billing'); }}
-              className="bg-red-400 text-white px-6 py-2 rounded hover:bg-green-600 transition-colors"
+              className="bg-red-500 shadow-lg shadow-red-500/50 text-white px-6 py-2 rounded hover:bg-red-600 transition-colors"
             >
               Billing
             </button>
