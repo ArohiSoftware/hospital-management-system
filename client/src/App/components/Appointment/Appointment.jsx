@@ -194,21 +194,22 @@ const renderSuggestions = (suggestions, handleSelect) => {
 
   return (
 
-    <div className="flex-1 overflow-y-auto px-20 mt-10 rounded-lg m-4">
+    <div className="flex-1 overflow-y-50 px-20 mt-10 rounded-lg m-4">
       <form onSubmit={handleSubmit} >
-        <h1 className="text-2xl font-bold mb-4">Create Appointment</h1>
+        <h1 className="text-2xl font-bold text-center mb-6 dark:text-white">Create Appointment</h1>
 
-        <div className="flex flex-wrap -mx-3 mb-6">
+        <div className="flex flex-wrap -mx-3 mb-3">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0 relative">
-            <label className="block mb-2">
-              Patient Name:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Patient Name
               <input
                 type="text"
                 value={patientName}
                 onChange={handlePatientChange}
                 onFocus={handlePatientFocus}
                 onBlur={handlePatientBlur}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder='Enter Patient Name'
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
               />
               {showPatientSuggestions && (
                 renderSuggestions(patientSuggestions, handleSelectPatient)
@@ -217,15 +218,16 @@ const renderSuggestions = (suggestions, handleSelect) => {
           </div>
 
           <div className="w-full md:w-1/2 px-3 relative">
-            <label className="block mb-2">
-              Doctor Name:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Doctor Name
               <input
                 type="text"
                 value={doctorName}
                 onChange={handleDoctorChange}
                 onFocus={handleDoctorFocus}
                 onBlur={handleDoctorBlur}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                placeholder="Enter Doctor's Name"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
               />
               {showDoctorSuggestions && (
                 renderSuggestions(doctorSuggestions, handleSelectDoctor)
@@ -234,26 +236,26 @@ const renderSuggestions = (suggestions, handleSelect) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap -mx-3 mb-6">
+        <div className="flex flex-wrap -mx-3 mb-3">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label className="block mb-2">
-              Appointment Date:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Appointment Date
               <input
                 type="date"
                 value={appointment_date}
                 onChange={(e) => setAppointmentDate(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
               />
             </label>
           </div>
 
           <div className="w-full md:w-1/2 px-3">
-            <label className="block mb-2">
-              Report Title:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Report Title
               <select
                 value={title}
                 onChange={(e) => setReportTitle(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
               >
                 <option value="Fever">Fever</option>
                 <option value="Cough">Cough</option>
@@ -263,14 +265,14 @@ const renderSuggestions = (suggestions, handleSelect) => {
           </div>
         </div>
 
-        <div className="flex flex-wrap -mx-3 mb-6">
+        <div className="flex flex-wrap -mx-3 mb-3">
           <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-            <label className="block mb-2">
-              Appointment Type:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Appointment Type
               <select
                 value={appointment_type}
                 onChange={(e) => setAppointmentType(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
               >
                 <option value="New">New</option>
                 <option value="Follow-up">Follow-up</option>
@@ -279,12 +281,12 @@ const renderSuggestions = (suggestions, handleSelect) => {
           </div>
 
           <div className="w-full md:w-1/2 px-3">
-            <label className="block mb-2">
-              Status:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Status
               <select
                 value={status}
                 onChange={(e) => setAppointmentStatus(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-700 dark:text-white dark:border-gray-500 dark:hover:bg-gray-700"
               >
                 <option value="PENDING">Pending</option>
                 <option value="COMPLETED">Completed</option>
@@ -295,25 +297,27 @@ const renderSuggestions = (suggestions, handleSelect) => {
 
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3">
-            <label className="block mb-2">
-              Description:
+            <label className="block mb-2 text-sm font-medium dark:text-gray-100">
+              Description
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                className="w-full p-2 mt-1 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
+                placeholder='Enter Description'
+                rows={4}
               />
             </label>
           </div>
         </div>
 
-      <div className='w-56 m-auto'>
-      <button
-          type="submit"
-          className="w-56  bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
-        >
-          Create Appointment
-        </button>
-      </div>
+        <div className='flex justify-center'>
+          <button
+            type="submit"
+            className="bg-blue-500 shadow-lg shadow-blue-500/50 text-white py-2 px-10 rounded-lg hover:bg-blue-600 transition-colors"
+          >
+            Create Appointment
+          </button>
+        </div>
       </form>
     </div>
   );

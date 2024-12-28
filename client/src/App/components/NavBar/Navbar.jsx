@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import notification from "../../assets/images/notifications_none.png";
 import darkmode from "../../assets/images/moon-solid_1.png";
+import lightmode from "../../assets/images/sun-solid.png";
 import about from "../../assets/images/info_outline.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,58 +10,48 @@ import { getprofile } from "../../redux/actions/StaffProfileAction";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [selectedSection, setSelectedSection] = useState(null);
 
-  // Check the path on initial render and set the selected section accordingly
-  const dispatch = useDispatch();
-  const userdata = useSelector((state) => state.profile);
-const user =userdata.userprofile;
-  console.log("userdata" , userdata)
+  // State for dark mode
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check localStorage for theme preference or fallback to system preference
+    return (
+      localStorage.getItem("theme") === "dark" ||
+      (!localStorage.getItem("theme") &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
+    );
+  });
+
+  // Apply theme on initial load
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDarkMode);
+    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   useEffect(() => {
-    console.log("get profile called ")
-    dispatch(getprofile());
-  }, [dispatch]);
-  
- // Safe checks for user data
- let Userprofile = "";
- let firstCharAfterSpace = "";
+    const pathSegments = location.pathname.split('/').filter(Boolean);
 
- // Check if the profile is available
- if (user && user.fullName) {
-   Userprofile = user.fullName;
-   const spaceIndex = Userprofile.indexOf(' ');
-
-   if (spaceIndex !== -1) {
-     firstCharAfterSpace = Userprofile.charAt(spaceIndex + 1);
-   }
- }
-  
-  useEffect(() => {
-    const pathSegments = location.pathname.split('/').filter(Boolean); // Get non-empty path segments
-
-    // Keywords to check for in the path
     const keywords = ["IPD", "OPD", "DASHBOARD"];
-
-    // Find the keyword present in the path, if any
     const matchedKeyword = keywords.find(keyword =>
       pathSegments.some(segment => segment.toLowerCase() === keyword.toLowerCase())
     );
-
-    // Set the selected section to the matched keyword or default to null if no match
     setSelectedSection(matchedKeyword || null);
   }, [location.pathname]);
+
   const handleClick = (section) => {
     setSelectedSection(section);
     navigate(`/${section.toLowerCase()}`);
   };
 
   return (
-    <header className="flex justify-between items-center py-2 px-10  w-full  rounded-t-lg">
-
-
-      <h1 className="text-xl font-bold  ">
-        Welcome, <span className="text-red-500">Dr.{Userprofile} </span>
+    <header className="flex justify-between items-center py-2 px-10 mx-2 w-full rounded-t-lg">
+      <h1 className="text-xl font-bold mx-8 dark:text-white">
+        Welcome, <span className="text-red-500">Dr. Robert Harry</span>
       </h1>
 
       {/* OPD and IPD Section */}
@@ -68,8 +59,8 @@ const user =userdata.userprofile;
         <button
           className={`px-5 py-2 font-semibold text-sm rounded-full transition-all duration-200 ${
             selectedSection === "OPD"
-              ? "bg-green-500 text-white"
-              : "bg-white hover:bg-green-400 hover:text-white"
+              ? "bg-green-400 text-white"
+              : "bg-white hover:bg-green-400 hover:text-white dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-green-400 dark:hover:text-white"
           }`}
           onClick={() => handleClick("OPD")}
         >
@@ -78,8 +69,8 @@ const user =userdata.userprofile;
         <button
           className={`px-5 py-2 font-semibold text-sm rounded-full transition-all duration-200 ${
             selectedSection === "IPD"
-              ? "bg-green-500 text-white"
-              : "bg-white hover:bg-green-400 hover:text-white"
+              ? "bg-green-400 text-white"
+              : "bg-white hover:bg-green-400 hover:text-white dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-green-400 dark:hover:text-white"
           }`}
           onClick={() => handleClick("IPD")}
         >
@@ -88,8 +79,8 @@ const user =userdata.userprofile;
         <button
           className={`px-5 py-2 font-semibold text-sm rounded-full transition-all duration-200 ${
             selectedSection === "DASHBOARD"
-              ? "bg-green-500 text-white"
-              : "bg-white hover:bg-green-400 hover:text-white"
+              ? "bg-green-400 text-white"
+              : "bg-white hover:bg-green-400 hover:text-white dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-green-400 dark:hover:text-white"
           }`}
           onClick={() => handleClick("DASHBOARD")}
         >
@@ -98,21 +89,23 @@ const user =userdata.userprofile;
       </div>
 
       {/* Search and Icons */}
-      <div className="flex items-center space-x-2 px-[5px] w-fit bg-white p-1 rounded-full ">
+      <div className="flex items-center space-x-4 bg-white p-2 rounded-full dark:bg-gray-800">
         <input
           type="text"
           placeholder="Search"
-          className="px-3 py-2 bg-gray-200 w-40 rounded-full  md:block"
+          className="px-3 py-2 bg-gray-200 rounded-full hidden md:block dark:bg-gray-600 dark:text-white"
         />
         <img
           src={notification}
           alt="Notification Bell"
           className="w-6 h-6 cursor-pointer"
         />
+        {/* Dark Mode Toggle */}
         <img
-          src={darkmode}
+          src={isDarkMode ? lightmode : darkmode}
           alt="Dark Mode Toggle"
           className="w-5 h-5 cursor-pointer"
+          onClick={toggleDarkMode}
         />
         <img src={about} alt="Information" className="w-6 h-6 cursor-pointer" />
 
