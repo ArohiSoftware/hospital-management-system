@@ -1,22 +1,133 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from "../Navbar/Navbar";
 import Sidebar from "../SideBar/Sidebar";
 import { useNavigate } from 'react-router-dom';
-
+import { useDispatch } from 'react-redux';
+import { AppointmentSearch } from '../../redux/actions/Appointment';
+import { TreatmentOpd } from '../../redux/actions/Treatment';
+import { toast } from 'react-toastify';
 const Treatment = () => {
   const [formData, setFormData] = useState({
-    appointmentId: '',
-    patientId: '',
-    doctorId: '',
-    diagnosis: '',
-    treatmentPlan: '',
-    reportFile: null,
-    followUpDate: '',
+    appointment_id: '',
+    patient_id: '',
+    doctor_id: '',
+    Doctor: '',
+    slot:'',
+    diagnosis: 'yes',
+    treatment_plan: 'No',
+    report_file: null,
+    follow_up_date : '',
   });
-  const [submitted, setSubmitted] = useState(false);
+  
+  const [patientName, setPatientName] = useState('');
+  const [patientNumber, setPatientNumber] = useState('');
+  const [showPatientSuggestions, setShowPatientSuggestions] = useState(false);
+  const [showMobileSuggestions, setShowMobileSuggestions] = useState(false); // For mobile number suggestions
+  const [selectedPatient, setSelectedPatient] = useState(null); // To hold the full patient object
+
+  const [patientSuggestions, setPatientSuggestions] = useState([]);
+  const [mobileSuggestions, setMobileSuggestions] = useState([]); // Mobile number suggestions
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Generic change handler for all input fields
+  const handleSelectPatient = (patient) => {
+    formData.appointment_id=patient.id;
+    formData.doctor_id=patient.doctor_id;
+    formData.patient_id=patient.patient_id;
+    setSelectedPatient(patient); // Store the full patient object
+    setPatientName(patient.Petients.fullName); 
+    setPatientNumber(patient.Petients.mobile_number); // Set the selected patient's mobile number
+    setPatientSuggestions([]);
+    setMobileSuggestions([]);
+    setShowPatientSuggestions(false);
+    setShowMobileSuggestions(false);
+  };
+  // useEffect(() => {
+  //   // Set the default date to today's date (YYYY-MM-DD format)
+  //   const today = new Date().toISOString().split('T')[0];
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     follow_up_date : today,
+  //   }));
+  // }, []);
+  const fetchPatientSuggestions = async (query, type) => {
+    if (!query.trim()) {
+      type === 'name' ? setPatientSuggestions([]) : setMobileSuggestions([]);
+      type === 'name' ? setShowPatientSuggestions(false) : setShowMobileSuggestions(false);
+      return;
+    }
+
+    try {
+      // Dispatch search based on the type (name or mobile)
+      dispatch(
+        AppointmentSearch(query, type, (result) => {
+          console.log(result)
+          setPatientSuggestions(result);
+          if (type === 'name') {
+            setShowPatientSuggestions(true);
+            setShowMobileSuggestions(false);
+          } else if (type === 'mobile') {
+            setShowMobileSuggestions(true);
+            setPatientSuggestions(false);
+          }
+        })
+      );
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const renderSuggestions = (suggestions, handleSelect, type) => {
+    return (
+      <ul
+        className="absolute bg-white border border-gray-300 mt-1 rounded-lg shadow-lg z-10"
+        style={{
+          maxHeight: '200px',
+          overflowY: 'auto',
+        }}
+      >
+        {suggestions.map((suggestion, index) => (
+          <li
+            key={index}
+            className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+            onMouseDown={() => handleSelect(suggestion)} // Use onMouseDown here
+          >
+            {type === 'name' ? suggestion.Petients.fullName : suggestion.Petients.mobile_number}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const handlePatientChange = (e) => {
+    setPatientName(e.target.value);
+    fetchPatientSuggestions(e.target.value, 'name');
+    setShowPatientSuggestions(true);
+  };
+
+  const handleMobileChange = (e) => {
+    setPatientNumber(e.target.value);
+    fetchPatientSuggestions(e.target.value, 'mobile');
+    setShowMobileSuggestions(true);
+  };
+
+  const handlePatientFocus = () => {
+    setShowPatientSuggestions(true);
+  };
+
+  const handlePatientBlur = () => {
+    setShowPatientSuggestions(false);
+  };
+
+  const handleMobileFocus = () => {
+    setShowMobileSuggestions(true);
+  };
+
+  const handleMobileBlur = () => {
+    setShowMobileSuggestions(false);
+  };
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     setFormData((prevData) => ({
@@ -25,25 +136,28 @@ const Treatment = () => {
     }));
   };
 
-  // Validation and submission handler
   const handleSubmit = (path) => {
-    const { appointmentId, patientId, doctorId, diagnosis, followUpDate } = formData;
-    
-    if (!appointmentId || !patientId || !doctorId || !diagnosis || !followUpDate) {
-      alert("Please fill in all required fields.");
+    const { appointment_id,follow_up_date,diagnosis,doctor_id,patient_id,treatment_plan,slot } = formData;
+    if(slot)
+    {
+  const [hours, minutes] = slot.split(":");
+  const period = hours >= 12 ? "PM" : "AM";
+  const formattedHours = hours % 12 || 12; // Convert "0" or "12+" hours to 12-hour format
+  const formattedValue = `${formattedHours}:${minutes} ${period}`;
+  formData.slot=formattedValue
+    }
+    if (!appointment_id|| !diagnosis || !doctor_id || !patient_id || !treatment_plan ) {
+      toast.warning("Please fill in all required fields.");
       return;
     }
-
-    console.log(formData);
-    alert("Data Submitted");
-     handleNavigation(path)
-  };
-
-  // Conditional navigation function
-  const handleNavigation = (path) => {
-    const hostname = window.location.pathname;
-
-      navigate(hostname+path);
+    dispatch(
+      TreatmentOpd(formData, async (result) =>{
+        console.log(result);
+        toast(`successfull create a treatment ${patientName}`);
+      navigate(window.location.pathname + path);
+      })
+    );
+  
 
   };
 
@@ -52,6 +166,23 @@ const Treatment = () => {
       <form onSubmit={handleSubmit} className="mt-0 bg-opacity-60 rounded-lg p-6 w-full">
         <h2 className="text-lg my-8 bg-orange-500 shadow-lg shadow-orange-500/50 text-white text-center font-bold py-1 px-2">Add New Treatment</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+
+          <div >
+            <label className="block text-gray-700 text-sm font-bold mb-1">
+              Patient Name:
+              <input
+                type="text"
+                value={patientName}
+                onChange={handlePatientChange}
+                onFocus={handlePatientFocus}
+                onBlur={handlePatientBlur}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+              />
+              {showPatientSuggestions && (
+                renderSuggestions(patientSuggestions, handleSelectPatient, 'name')
+              )}
+            </label>
+          </div>
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Appointment ID</label>
             <input
@@ -63,7 +194,6 @@ const Treatment = () => {
               placeholder="Enter Appointment ID"
             />
           </div>
-
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Patient Name</label>
             <input
@@ -72,10 +202,9 @@ const Treatment = () => {
               className="w-full p-2 border rounded bg-white dark:bg-gray-100 dark:bg-opacity-10 dark:text-white dark:border-gray-500"
               value={formData.patientId}
               onChange={handleChange}
-              placeholder="Enter Patient ID"
+              placeholder="Enter Appointment ID"
             />
           </div>
-
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Doctor ID</label>
             <input
@@ -146,7 +275,6 @@ const Treatment = () => {
               onChange={handleChange}
             />
           </div>
-
           <div>
             <label className="block mb-1 text-sm font-medium dark:text-gray-100">Fill reports</label>
             <div className='flex space-x-3 justify-between'>

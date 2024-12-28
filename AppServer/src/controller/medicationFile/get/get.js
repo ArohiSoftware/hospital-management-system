@@ -1,3 +1,4 @@
+import prisma from "../../../db/index.js";
 export const getMainMedications= async (req, res) => {
     try {
         const mainMedications = await prisma.mainMedication.findMany({

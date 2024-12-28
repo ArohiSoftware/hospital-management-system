@@ -5,5 +5,7 @@ import { getAllStaff,getStaffById ,getStaffByName} from "./GET/get.staff.js";
 import { login } from "./auth/Login.js";
 import { logout } from "./auth/Logout.js";
 import { refreshToken } from "./auth/refreshToken.js";
-
-export {createStaff,deleteStaff,getAllStaff,getStaffById,updateStaff,login,logout,refreshToken,getStaffByName};
+import { getProfile } from "./auth/getprofile.js";
+import { authenticateToken } from "../../middleware/verify.js";
+import { getUserProfile } from "./profile/getProfileLoginUser.js";
+export {createStaff,deleteStaff,getAllStaff,getStaffById,updateStaff,login,logout,refreshToken,getStaffByName ,getProfile , authenticateToken, getUserProfile};

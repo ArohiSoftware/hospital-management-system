@@ -6,7 +6,7 @@ export default function IPD() {
         <>
       
             <div>
-                <form className='m-auto  w-[70vw] py-12 '>
+                <form className='m-auto  w-[65vw] py-12 '>
 
                     <label className='font-bold text-xl mx-3 text-gray-600'>Reports </label>
                     <input type='text'

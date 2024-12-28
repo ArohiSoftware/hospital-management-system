@@ -4,6 +4,7 @@ export const searchAppointments = async (req, res) => {
     const {
         searchTerm, filterBy
       } = req.body;
+      console.log(searchTerm);
       try {
     
     

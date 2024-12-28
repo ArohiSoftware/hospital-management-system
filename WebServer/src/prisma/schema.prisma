@@ -56,24 +56,27 @@ model Client {
   hospital           String
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @default(now())
-  clientSubscription ClientSubscription?
   setting            Setting?
   userCredentials    UserCredentials?
 
   @@map("Client")
+  ClientSubscription ClientSubscription[]
 }
 
 model ClientSubscription {
   id                 Int             @id @default(autoincrement())
-  clientId           Int?            @unique
+  clientId           Int
+  PaymentMethodId    Int          @unique
+  subscriptionPlanId Int  
   startDate          DateTime
   endDate            DateTime
   paymentStatus      String?            @default("Pending")
   subscriptionStatus String?            @default("Active")
   createdAt          DateTime           @default(now())
-  subscriptionPlan   SubscriptionPlan[]
-  client             Client?            @relation(fields: [clientId], references: [id])
+  client             Client           @relation(fields: [clientId], references: [id])
+  PaymentMethod     PaymentMethod @relation(fields: [PaymentMethodId], references: [id])
 
+  SubscriptionPlan     SubscriptionPlan @relation(fields: [subscriptionPlanId], references: [id])
   @@map("ClientSubscription")
 }
 
@@ -96,11 +99,9 @@ model SubscriptionPlan {
   duration               Int
   features               String?
   createdAt              DateTime           @default(now())
-  clinet_subscription_id Int
   paymentMethods         PaymentMethod[] 
-  clientSubscription     ClientSubscription @relation(fields: [clinet_subscription_id], references: [id])
-
   @@map("SubscriptionPlan")
+  ClientSubscription ClientSubscription[]
 }
 
 model User {
@@ -135,6 +136,7 @@ model PaymentMethod {
   subscriptionPlan SubscriptionPlan @relation(fields: [plan_id], references: [id])
 
   @@map("PaymentMethod")
+  ClientSubscription ClientSubscription?
 }
 
 model UserCredentials {

@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { patientSearch } from '../../redux/actions/PatientSearching';
+import axiosInstanceApp from '../../axiosConfig';
+import { StaffSearch } from '../../redux/actions/StaffProfileAction';
 
 const Appointment = () => {
   const [patientName, setPatientName] = useState('');
@@ -47,35 +49,30 @@ const Appointment = () => {
   
 
   const fetchDoctorSuggestions = async (query) => {
-    if (!query) {
+    if (!query.trim()) {
       setDoctorSuggestions([]);
       setShowDoctorSuggestions(false);
       return;
     }
-
+  
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:4000/software/api/staff/getByName/${query}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name: query }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      setDoctorSuggestions(data.map(doctor => doctor.fullName));
-      setShowDoctorSuggestions(true);
+      dispatch(
+        StaffSearch(query, (result) => {
+          console.log("Patient data:", result);
+          const suggestions = result?.map?.(doctor => doctor.fullName) || [];
+          setDoctorSuggestions(suggestions);
+          setShowDoctorSuggestions(true);
+        })
+      );
     } catch (error) {
-      console.error('Error fetching doctor suggestions:', error);
+      console.error("Error fetching doctor suggestions:", error);
+      // Optionally show a toast or UI feedback
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handlePatientChange = (e) => {
     setPatientName(e.target.value);
@@ -140,7 +137,7 @@ const renderSuggestions = (suggestions, handleSelect) => {
     };
 
     try {
-      const response = await fetch('http://localhost:4000/software/api/opdAppointment/create', {
+      const response = await fetch('http://localhost:4000/api/opdAppointment/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,8 +155,7 @@ const renderSuggestions = (suggestions, handleSelect) => {
       setSubmitted(true);
 
       const path = window.location.pathname;
-      navigate(`${path}/appointments`);
-      toast.success("Appointment created successfully!")
+      toast(`${patientName} Appointment created successfully!`)
 
 
       //clear all fields after the alert//

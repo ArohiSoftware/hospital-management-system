@@ -18,7 +18,9 @@ import medication_file from '../routes/medication-file.js';
 
 import LabReport from '../routes/routes.LabReport.js'
 import TestRoutes from '../routes/test.routes.js';
-
+import medicalReportRoute from '../routes/route.medicalReport.js';
+import reportResultRoute from '../routes/route.reportResult.js';
+import medicationList from '../routes/route.medicationList.js';
 
 
 
@@ -57,6 +59,15 @@ AllRoutes.use('/patient',PatientRoute);
 
 //LabReport routes
 AllRoutes.use('/labReport',LabReport);
+
+//medication list routes
+AllRoutes.use('/medicationlist',medicationList)
+
+//medical Report routes
+AllRoutes.use('/medicalreport',medicalReportRoute);
+
+//Report Result routes
+AllRoutes.use('/reportresult',reportResultRoute);
 
 // Export the router
 export default AllRoutes;

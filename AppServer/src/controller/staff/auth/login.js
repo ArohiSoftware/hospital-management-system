@@ -26,6 +26,7 @@ export async function login (req, res) {
 
     // Compare the hashed passwords
     const isMatch = await bcrypt.compare(password, staffMember.password);
+    console.log(isMatch)
     if (isMatch) {
       const { accessToken, refreshToken } = setTokens(staffMember, res);
      

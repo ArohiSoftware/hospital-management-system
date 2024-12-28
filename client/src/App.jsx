@@ -9,7 +9,11 @@ function App() {
 
   useEffect(() => {
     const hostname = window.location.hostname;
+
+    console.log("hostname",hostname)
     const parts = hostname.split(".");
+
+    console.log("parts",parts)
     if (parts.length > 1) {
       setIsSubdomain(true); // If there's a subdomain, set this to true
     }

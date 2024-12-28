@@ -30,15 +30,15 @@ export const updateAdvertisement = async (req, res) => {
 
     // Update the advertisement in the database
     const updatedAdvertisement = await prisma.advertisement.update({
-      where: { id: BigInt(id) },
+      where: { id: id },
       data,
     });
 
     // Convert BigInt id to string
-    const updatedAdd = {
-      ...updatedAdvertisement,
-      id: updatedAdvertisement.id.toString(),
-    };
+    // const updatedAdd = {
+    //   ...updatedAdvertisement,
+    //   id: updatedAdvertisement.id.toString(),
+    // };
 
     res.status(200).json({message:"Advertise Updated succesfully"});
   } catch (error) {

@@ -11,6 +11,8 @@ export const getClients = async (req, res) => {
     }
 };
 
+
+
 export const getClientSubscriptions = async (req, res) => {
     try {
         const clientSubscriptions = await prisma.clientSubscription.findMany(); // Retrieving all entries

@@ -8,7 +8,7 @@ export const deleteAdvertisement = async (req, res) => {
       const { id } = req.params;
   
       await prisma.advertisement.delete({
-        where: { id: BigInt(id) },
+        where: { id :id },
       });
   
       res.status(204).send(); // No Content

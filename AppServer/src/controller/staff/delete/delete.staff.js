@@ -2,22 +2,34 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-//delete from staff by id
+
 export const deleteStaff = async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      const deletedStaff = await prisma.staff.delete({
-        where: { Staff_id: BigInt(id) },
-      });
-      console.log(deletedStaff);
-  
-      return res.json({ message: 'Staff deleted successfully' });
-    } catch (error) {
-      if (error.code === 'P2025') {
-        return res.status(404).json({ error: 'Staff not found' });
-      }
-      console.error('Error deleting staff:', error.message);
-      return res.status(500).json({ error: 'Error deleting staff' });
+  const { id } = req.params; 
+
+ 
+  const staffId = parseInt(id);
+
+  if (isNaN(staffId)) {
+    return res.status(400).json({ error: 'Invalid staff ID' });
+  }
+
+  try {
+    
+    const staff = await prisma.staff.findUnique({
+      where: { id: staffId },
+    });
+    if (!staff) {
+      return res.status(404).json({ error: 'Staff not found' });
     }
-  };
+
+    await prisma.staff.delete({
+      where: { id: staffId },
+    });
+
+   
+    return res.status(200).json({ message: 'Staff deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting staff:', error);
+    return res.status(500).json({ error: 'Failed to delete staff' });
+  }
+};

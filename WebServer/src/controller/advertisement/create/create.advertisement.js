@@ -28,11 +28,11 @@ console.log(imageUrl)
     // console.log(newAdvertisement)
     
     //converting bigint into string
-    const newadd = {
-      ...newAdvertisement,
-      id: newAdvertisement.id.toString()
-    };
-    res.status(201).json(newadd);
+    // const newadd = {
+    //   ...newAdvertisement,
+    //   id: newAdvertisement.id.toString()
+    // };
+    res.status(201).json(newAdvertisement);
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Internal server error' });

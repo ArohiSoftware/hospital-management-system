@@ -43,7 +43,24 @@ const CreateAccount = ({ close, isOpen, onSuccess }) => {
     }
 
     // Dispatch the createAccount action
-    dispatch(createAccount(formData, onSuccess));
+
+    // dispatch(createAccount(formData, onSuccess));
+    dispatch(
+      createAccount(formData, () => {
+        setFormData({
+          fullName: "",
+          phone: "",
+          email: "",
+          hospitalName: "",
+          address: "",
+          dateOfBirth: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setPasswordError("");
+        onSuccess(); // Trigger any success logic like navigation or showing a success message
+      })
+    );
   };
 
   // Close modal on Esc key press

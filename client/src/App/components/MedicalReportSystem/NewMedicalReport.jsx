@@ -1,122 +1,175 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useReportContext } from './ReportContext'
-//2 
+
 export default function NewMedicalReport() {
-  const [currentReport, setCurrentReport] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [currentReport, setCurrentReport] = useState({
+    doctorId: '',
+    treatmentId: '',
+    mainReportId: '',
+    reportDate: '',
+    reportType: '',
+    reportDescription: '',
+    cost: '',
+    paid: '',
+    status: ''
+  })
   const navigate = useNavigate()
   const { setReportData } = useReportContext()
 
-  useEffect(() => {
-    const fetchNewReport = async () => {
-      setIsLoading(true)
-      try {
-        // Simulating API call with setTimeout
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        const newReport = {
-          id: '4',
-          reportId: 'KSFL18004',
-          doctorId: 'LOAI5004',
-          treatmentId: 'W349591YTH4',
-          mainReportId: 'OPD',
-          reportDate: new Date().toISOString().split('T')[0],
-          reportType: 'OPD',
-          reportDescription: 'New patient report',
-          cost: '0',
-          paid: '0',
-          status: 'New',
-          observations: [],
-          lastModified: new Date()
-        }
-        setCurrentReport(newReport)
-        setReportData(newReport)
-      } catch (error) {
-        console.log('Error fetching new report:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchNewReport()
-  }, [setReportData])
-
-  const handleNextFromB = () => {
-    const pathSegments = window.location.pathname.split('/');
-    pathSegments[pathSegments.length - 1] = `report-result/${currentReport.id}`;
-    const newPath = pathSegments.join('/');
-   console.log(newPath);
-   navigate(newPath);
+  // Handle input change dynamically for each field
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setCurrentReport((prevReport) => ({
+      ...prevReport,
+      [name]: value
+    }))
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
-  if (!currentReport) {
-    return <div>Error loading report data</div>
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // Handle form submission, e.g., save data, send to API, etc.
+    setReportData(currentReport)
+    console.log("Form Submitted:", currentReport)
+    // You could navigate to another page if needed
+    navigate(`/report-result/${currentReport.reportId}`)
   }
 
   return (
-    
-     <div className="p-8">
+    <div className="p-8">
       <div className="bg-rose-100 h-4 flex justify-between items-center max-w-screen-2xl mx-auto p-4">
         <h1 className="text-lg font-bold text-gray-800 border-b pb-0">New medical report</h1>
       </div>
       <div className="bg-customGreen rounded-2xl p-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit}>
+          {/* Report ID */}
           <div>
             <label className="block text-sm font-normal text-gray-700">Report ID</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportId} readOnly />
+            <input
+              type="text"
+              name="reportId"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.reportId}
+              onChange={handleInputChange}
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Doctor ID</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.doctorId} readOnly />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Treatment ID</label>
-            <input type="text" className="mt-1 pl-2 h-8   block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.treatmentId} readOnly />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Main Report ID</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.mainReportId} readOnly />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Report Date</label>
-            <input type="date" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportDate} readOnly />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Report type</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportType} readOnly />
-          </div>
-        </div>
 
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700">Report description</label>
-          <textarea className="mt-1 pl-2  block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.reportDescription} readOnly></textarea>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+          {/* Doctor ID */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Cost</label>
-            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.cost} readOnly />
+            <label className="block text-sm font-normal text-gray-700">Doctor ID</label>
+            <input
+              type="text"
+              name="doctorId"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.doctorId}
+              onChange={handleInputChange}
+            />
           </div>
+
+          {/* Treatment ID */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Paid</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.paid} readOnly />
+            <label className="block text-sm font-normal text-gray-700">Treatment ID</label>
+            <input
+              type="text"
+              name="treatmentId"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.treatmentId}
+              onChange={handleInputChange}
+            />
           </div>
-          <div></div> 
-        </div>
 
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <textarea className="mt-1 pl-2 block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.status} readOnly></textarea>
-        </div>
+          {/* Main Report ID */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Main Report ID</label>
+            <input
+              type="text"
+              name="mainReportId"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.mainReportId}
+              onChange={handleInputChange}
+            />
+          </div>
 
-        <div className="mt-6 col-span-3 flex justify-center">
-          <button onClick={handleNextFromB} className="bg-green-600  text-white px-8 py-3 text-lg rounded-md">Next &gt;</button>
-        </div>
+          {/* Report Date */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Report Date</label>
+            <input
+              type="date"
+              name="reportDate"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.reportDate}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Report Type */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Report Type</label>
+            <input
+              type="text"
+              name="reportType"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.reportType}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Report Description */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Report Description</label>
+            <textarea
+              name="reportDescription"
+              className="mt-1 pl-2 block w-full border rounded-md shadow-sm bg-gray-100"
+              rows={3}
+              value={currentReport.reportDescription}
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
+
+          {/* Cost */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Cost</label>
+            <input
+              type="text"
+              name="cost"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.cost}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Paid */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Paid</label>
+            <input
+              type="text"
+              name="paid"
+              className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100"
+              value={currentReport.paid}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="block text-sm font-normal text-gray-700">Status</label>
+            <textarea
+              name="status"
+              className="mt-1 pl-2 block w-full border rounded-md shadow-sm bg-gray-100"
+              rows={3}
+              value={currentReport.status}
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
+
+          {/* Submit Button */}
+          <div className="mt-6 col-span-3 flex justify-center">
+            <button type="submit" className="bg-green-600 text-white px-8 py-3 text-lg rounded-md">
+              Submit
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-    
   )
 }

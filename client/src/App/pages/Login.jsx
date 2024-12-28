@@ -6,6 +6,7 @@ import Logimg from "../assets/images/Logimg.png";
 import sailogo from "../assets/images/sailogo.png";
 import pass from "../assets/images/pass.png";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [userId, setUserId] = useState("");
@@ -27,7 +28,7 @@ export default function Login() {
   
     dispatch(login(userId, password, (data) => {
       console.log('Callback data:', data);
-      alert('Login successful!');
+      toast('Login successful!');
       navigate('/dashboard'); // Uncomment if ready to redirect
     }));
   };

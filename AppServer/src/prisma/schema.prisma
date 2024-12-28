@@ -245,6 +245,7 @@ model MainMedicalReports {
   IPDTreatments   IPDTreatments?   @relation(fields: [IPDtreatment_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
+
 model MedicalReports {
   report_id          Int              @id @default(autoincrement())
   patient_id         Int?
@@ -337,7 +338,8 @@ model OPDTreatments {
   diagnosis          String?
   treatment_plan     String?
   report_file        String?
-  follow_up_date     String
+  follow_up_date     String?
+  slot               String?
   created_at         DateTime?           @default(now()) @db.Timestamp(0)
   updated_at         DateTime?           @default(now()) @db.Timestamp(0)
   PatientMedication  PatientMedication[]

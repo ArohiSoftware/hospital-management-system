@@ -3,7 +3,7 @@ import prisma from '../../../db/index.js';
 import {  getCurrentDateInIST } from '../../../utils/dateConverter.js';
 
 export const OPDTreatmentsController = async (req, res) => {
-    const { appointment_id, patient_id, doctor_id, diagnosis, treatment_plan, report_file, follow_up_date } = req.body;
+    const { appointment_id, patient_id, doctor_id, diagnosis, treatment_plan, report_file, follow_up_date,slot } = req.body;
 
     try {
       const existingTreatment = await prisma.oPDTreatments.findFirst({
@@ -15,7 +15,7 @@ export const OPDTreatmentsController = async (req, res) => {
       }
 
       const newTreatment = await prisma.oPDTreatments.create({
-        data: { appointment_id, patient_id, doctor_id, diagnosis, treatment_plan, report_file,follow_up_date:getCurrentDateInIST(), }
+        data: { appointment_id, patient_id, doctor_id, diagnosis, treatment_plan, report_file,follow_up_date:follow_up_date, slot:slot}
       });
 
       res.status(201).json({ msg: 'Successfully created OPD Treatment', data: newTreatment });

@@ -1,14 +1,16 @@
-// Medication 3rd page code
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { MedicationContext } from '../Medication/Medication';
 import { Plus, Minus, X } from 'lucide-react';
-//3
+
 export default function MedicationDetails() {
   const location = useLocation();
+  const medicationData = location.state?.medicationData;
   const navigate = useNavigate();
   const { id } = useParams();
   const context = useContext(MedicationContext);
+
+  console.log(medicationData);
 
   if (!context) {
     throw new Error("MedicationDetails must be used within a MedicationContext.Provider");
@@ -42,6 +44,10 @@ export default function MedicationDetails() {
   });
   const [instructions, setInstructions] = useState('');
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
+  // New state for medication suggestions
+  const [medicationSuggestions, setMedicationSuggestions] = useState([]);
+  const [showMedicationSuggestions, setShowMedicationSuggestions] = useState(false);
 
   useEffect(() => {
     if (location.state?.formData) {
@@ -55,6 +61,47 @@ export default function MedicationDetails() {
       }
     }
   }, [id, medications, location.state]);
+
+  const fetchMedicationSuggestions = async (query) => {
+    if (!query) {
+      setMedicationSuggestions([]);
+      setShowMedicationSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:4000/software/api/medicationlist/getbyname/${query}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: query }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log(data);
+      setMedicationSuggestions(data.map(med => med.name)); // Adjust based on your data structure
+      setShowMedicationSuggestions(true);
+    } catch (error) {
+      console.error('Error fetching medication suggestions:', error);
+    }
+  };
+
+  const handleMedicationNameChange = (e) => {
+    const { value } = e.target;
+    setNewMedication(prev => ({ ...prev, medication_name: value }));
+    fetchMedicationSuggestions(value);
+  };
+
+  const handleSelectMedication = (medication) => {
+    setNewMedication(prev => ({ ...prev, medication_name: medication }));
+    setMedicationSuggestions([]);
+    setShowMedicationSuggestions(false);
+  };
 
   const handleAddMedication = () => {
     setMedicationList([...medicationList, newMedication]);
@@ -78,29 +125,58 @@ export default function MedicationDetails() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const medicationData = {
-      ...formData,
+  
+    // Combine all form data into a single object to send to the backend
+    const OverallmedicationData = {
+      ...medicationData,
       medications: medicationList,
-      instructions
+      instructions,
     };
+    
+  
+    try {
+      const response = await fetch('http://localhost:4000/software/api/medication/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(OverallmedicationData),
+      });
 
-    if (id) {
-      setMedications(medications.map(med => med.id === id ? medicationData : med));
-    } else {
-      setMedications([...medications, medicationData]);
+  
+      if (!response.ok) {
+        throw new Error('Failed to save medication data');
+      }
+  
+      const newData = await response.json();
+      setMedications([...medications, newData]); // Update the context with the new data
+      navigate('/'); // Redirect or show a success message after saving
+    } catch (error) {
+      console.error('Error saving medication data:', error);
+      // Optionally, show an error message to the user
     }
-
-    navigate('/');
   };
 
   const calculateTotalCost = () => {
     return medicationList.reduce((total, med) => total + parseFloat(med.cost || 0), 0).toFixed(2);
   };
 
+  const renderMedicationSuggestions = () => (
+    <ul className="absolute bg-white border border-gray-300 mt-1 rounded-lg shadow-lg z-10">
+      {medicationSuggestions.map((suggestion, index) => (
+        <li
+          key={index}
+          className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+          onMouseDown={() => handleSelectMedication(suggestion)}
+        >
+          {suggestion}
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
-    
     <>
-      
       <div className=''>
         <h1 className="text-xl font-semibold mb-6 bg-[#E4D7D7] p-2 rounded max-w-screen-2xl mx-auto">New Medication</h1>
       </div>
@@ -108,47 +184,47 @@ export default function MedicationDetails() {
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Id</label>
-            <input type="text" value={formData.id || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="ID" />
+            <input type="text" value={medicationData.id} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="ID" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Patient medication id</label>
-            <input type="text" value={formData.patientMedicationId || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Patient medication ID" />
+            <input type="text" value={medicationData.PatientMedication_id} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Patient medication ID" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Surgery records id</label>
-            <input type="text" value={formData.surgeryRecordsId || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Surgery records ID" />
+            <input type="text" value={medicationData.SurgeryRecords_id} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Surgery records ID" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Doctor Id</label>
-            <input type="text" value={formData.doctorId || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Doctor ID" />
+            <input type="text" value={medicationData.doctor_id} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Doctor ID" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input type="date" value={formData.startDate || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" />
+            <input type="date" value={medicationData.start_date} readOnly className="w-full p-2 bg-gray-200 rounded-md" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input type="date" value={formData.endDate || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" />
+            <input type="date" value={medicationData.end_date} readOnly className="w-full p-2 bg-gray-200 rounded-md" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Treatment Type</label>
-            <input type="text" value={formData.treatmentType || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Treatment Type" />
+            <input type="text" value={medicationData.treatment_type} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Treatment Type" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Total Quantity</label>
-            <input type="text" value={formData.totalQuantity || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Total Quantity" />
+            <input type="text" value={medicationData.total_quantity} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Total Quantity" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Report Description</label>
-            <input type="text" value={formData.reportDescription || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Report Description" />
+            <input type="text" value={medicationData.description} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Report Description" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Cost</label>
-            <input type="text" value={formData.cost || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Cost" />
+            <input type="text" value={medicationData.cost} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Cost" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Paid</label>
-            <input type="text" value={formData.paid || ''} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Paid" />
+          <label className="block text-sm font-medium text-gray-700 mb-1">Paid</label>
+            < input type="text" value={medicationData.paid} readOnly className="w-full p-2 bg-gray-200 rounded-md" placeholder="Paid" />
           </div>
         </div>
         <div className="mb-6 ">
@@ -161,7 +237,7 @@ export default function MedicationDetails() {
           <table className="w-full bg-white">
             <thead className=" bg-rose-100">
               <tr>
-                <th className="p-2 text-left">Medicine ID</th>
+                
                 <th className="p-2 text-left">Medication Name</th>
                 <th className="p-2 text-left">Dosage</th>
                 <th className="p-2 text-left">Frequency</th>
@@ -175,7 +251,7 @@ export default function MedicationDetails() {
             <tbody>
               {medicationList.map((med, index) => (
                 <tr key={index} className="border-b">
-                  <td className="p-2">{med.id}</td>
+                  
                   <td className="p-2">{med.medication_name}</td>
                   <td className="p-2">{med.dosage}</td>
                   <td className="p-2">{med.frequency}</td>
@@ -227,93 +303,87 @@ export default function MedicationDetails() {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Medicine ID</label>
-    <input
-      type="text"
-      value={newMedication.id}
-      onChange={(e) => setNewMedication({ ...newMedication, id: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Medication Name</label>
-    <input
-      type="text"
-      value={newMedication.medication_name}
-      onChange={(e) => setNewMedication({ ...newMedication, medication_name: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Medication Name</label>
+                <input
+                  type="text"
+                  value={newMedication.medication_name}
+                  onChange={handleMedicationNameChange}
+                  onFocus={() => setShowMedicationSuggestions(true)}
+                  onBlur={() => setShowMedicationSuggestions(false)}
+                  className="w-full p-2 border rounded-md"
+                />
+                {showMedicationSuggestions && renderMedicationSuggestions()}
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
-    <input
-      type="text"
-      value={newMedication.dosage}
-      onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Dosage</label>
+                <input
+                  type="text"
+                  value={newMedication.dosage}
+                  onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
-    <input
-      type="text"
-      value={newMedication.frequency}
-      onChange={(e) => setNewMedication({ ...newMedication, frequency: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
+                <input
+                  type="text"
+                  value={newMedication.frequency}
+                  onChange={(e) => setNewMedication({ ...newMedication, frequency: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Cost</label>
-    <input
-      type="number"
-      value={newMedication.cost}
-      onChange={(e) => setNewMedication({ ...newMedication, cost: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cost</label>
+                <input
+                  type="number"
+                  value={newMedication.cost}
+                  onChange={(e) => setNewMedication({ ...newMedication, cost: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-    <input
-      type="date"
-      value={newMedication.start_date}
-      onChange={(e) => setNewMedication({ ...newMedication, start_date: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                <input
+                  type="date"
+                  value={newMedication.start_date}
+                  onChange={(e) => setNewMedication({ ...newMedication, start_date: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-    <input
-      type="date"
-      value={newMedication.end_date}
-      onChange={(e) => setNewMedication({ ...newMedication, end_date: e.target.value })}
-      className="w-full p-2 border rounded-md"
-    />
-  </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                <input
+                  type="date"
+                  value={newMedication.end_date}
+                  onChange={(e) => setNewMedication({ ...newMedication, end_date: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                />
+              </div>
 
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
-    <textarea
-      value={newMedication.instructions}
-      onChange={(e) => setNewMedication({ ...newMedication, instructions: e.target.value })}
-      className="w-full p-2 border rounded-md"
-      rows={3}
-    ></textarea>
-  </div>
-</div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Instructions</label>
+                <textarea
+                  value={newMedication.instructions}
+                  onChange={(e) => setNewMedication({ ...newMedication, instructions: e.target.value })}
+                  className="w-full p-2 border rounded-md"
+                  rows={3}
+                ></textarea>
+              </div>
+            </div>
 
             <button onClick={handleAddMedication} className="bg-blue-500 text-white px-4 py-2 rounded-md w-full">
               Add Medication
             </button>
           </div>
         </div>
-      
       )}
     </>
   );

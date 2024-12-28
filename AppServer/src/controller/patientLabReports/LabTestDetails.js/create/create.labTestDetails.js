@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const addLabReportDetail = async (req, res) => {
-  const { report_id, parameter_name, parameter_value, normal_range } = req.body;
+  const { detail_id,report_id, parameter_name, parameter_value, normal_range } = req.body;
 
   try {
     // Verify that the lab report exists
@@ -18,6 +18,7 @@ export const addLabReportDetail = async (req, res) => {
     // Create the new Lab Report Detail
     const newLabReportDetail = await prisma.labTestDetails.create({
       data: {
+        detail_id,
         report_id,
         parameter_name,
         parameter_value,

@@ -8,14 +8,26 @@ import sparkler from '../../assets/images/sparkler.png'
 export default function PayOption() {
   const [selectedOption, setSelectedOption] = useState("");
 
-  
+  const [isOpen,setIsOpen] = useState(true);
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
+  const handleBackdropClick = (e) => {
+    if (e.target.id === "modalBackdrop") {
+      setIsOpen(false)
+    }
+  };
   return (
     <>
+    {isOpen &&
+    <div 
+      id="modalBackdrop" 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
+      onClick={handleBackdropClick}
+    >
       <div className='border flex-col lg:flex-row flex justify-between h-auto w-[68vw] bg-white rounded-2xl'>
+        
         <div className='lg:w-[650px]'>
           <h1 className='text-2xl font-extrabold mb-3 m-5'>PAYMENT OPTION </h1>
           <p className='text-sm ml-5 mb-3'>Complete payment in 00:14:35</p>
@@ -114,6 +126,8 @@ export default function PayOption() {
 
         </div>
       </div>
+      </div>
+}
     </>
   )
 }

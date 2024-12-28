@@ -1,29 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { PlusIcon, MinusIcon } from 'lucide-react'
-import { useReportContext } from './ReportContext'
-//3
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { PlusIcon, MinusIcon } from 'lucide-react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useReportContext } from './ReportContext';
+
 export default function ReportResult() {
-  const { reportData, setReportData } = useReportContext()
-  const [currentReport, setCurrentReport] = useState(null)
-  const [observations, setObservations] = useState([])
-  const [showPopup, setShowPopup] = useState(false)
-  const [newObservation, setNewObservation] = useState({ name: '', value: '' })
-  const [isLoading, setIsLoading] = useState(true)
-  const { id } = useParams()
-  const navigate = useNavigate()
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  console.log("location", location)
+  console.log("report data", reportData)
+
+  const { reportData } = useReportContext();
+
+  const [currentReport, setCurrentReport] = useState(null);
+  const [observations, setObservations] = useState([]);
+  const [newObservation, setNewObservation] = useState({ name: '', value: '' });
+  const [showPopup, setShowPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchReport = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        if (reportData) {
-          setCurrentReport(reportData)
-          setObservations(reportData.observations)
-        } else {
+        // Check if report data is passed through the state
+        if (location.state && location.state.report) {
+          const reportFromState = location.state.report;
+          setCurrentReport(reportFromState);
+          setObservations(reportFromState.observations || []);
+        } else if (reportData) {
+          // Use report data from context if available
+          setCurrentReport(reportData);
+          setObservations(reportData.observations || []);
+        }
+
+        else {
           // Fallback to fetching from API if no context data
-          // Simulating API call with setTimeout
-          await new Promise(resolve => setTimeout(resolve, 1000))
+          await new Promise(resolve => setTimeout(resolve, 1000));
           const fetchedReport = {
             id: id,
             reportId: `KSFL${id}`,
@@ -38,107 +53,112 @@ export default function ReportResult() {
             status: 'New',
             observations: [],
             lastModified: new Date()
-          }
-          setCurrentReport(fetchedReport)
-          setObservations(fetchedReport.observations)
-          setReportData(fetchedReport)
+          };
+          setCurrentReport(fetchedReport);
+          setObservations(fetchedReport.observations);
         }
       } catch (error) {
-        console.log('Error fetching report:', error)
+        console.log('Error fetching report:', error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
-    fetchReport()
-  }, [id, reportData, setReportData])
+    fetchReport();
+  }, [id]);
 
   const handleAddObservation = () => {
-    setShowPopup(true)
-  }
+    setShowPopup(true);
+  };
 
   const handleSaveObservation = () => {
     if (newObservation.name && newObservation.value) {
-      const updatedObservations = [...observations, newObservation]
-      setObservations(updatedObservations)
-      setNewObservation({ name: '', value: '' })
-      setShowPopup(false)
-      
-      // Update the report data in the context
-      setReportData(prevData => ({
-        ...prevData,
-        observations: updatedObservations
-      }))
+      const updatedObservations = [...observations, newObservation];
+      setObservations(updatedObservations);
+      setNewObservation({ name: '', value: '' });
+      setShowPopup(false);
     }
-  }
+  };
 
   const handleDeleteObservation = (index) => {
-    const updatedObservations = observations.filter((_, i) => i !== index)
-    setObservations(updatedObservations)
-    
-    // Update the report data in the context
-    setReportData(prevData => ({
-      ...prevData,
-      observations: updatedObservations
-    }))
-  }
+    const updatedObservations = observations.filter((_, i) => i !== index);
+    setObservations(updatedObservations);
+  };
 
-  const handleSave = async () => {
-    const updatedReport = { ...currentReport, observations, lastModified: new Date() }
+  const handleSubmit = async () => {
+    console.log(currentReport.report_id);
     try {
-      // Simulating API call with setTimeout
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      console.log('Report saved (simulated):', updatedReport)
-      setReportData(updatedReport)
-      navigate('/')
+      // Replace the following URL with your actual API endpoint
+      const response = await fetch('http://localhost:4000/api/reportresult/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          report_id: currentReport.report_id,
+          observations: observations,
+        }),
+      });
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Failed to save observations');
+      }
+
+      const result = await response.json();
+      console.log('Observations saved successfully:', result);
+      // Optionally navigate to another page or show a success message
+      toast.success("Success Notification !", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     } catch (error) {
-      console.log('Error saving report (simulated):', error)
+      console.error('Error saving observations:', error);
+      // Handle error (e.g., show an error message)
     }
-  }
+  };
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   if (!currentReport) {
-    return <div>Error loading report data</div>
+    return <div>Error loading report data</div>;
   }
 
   return (
-    
     <div className="w-full">
       <h1 className="text-2xl font-bold text-center mb-6">Medical Report Result</h1>
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-normal   text-gray-700">Report ID</label>
-            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportId} readOnly />
+            <label className="block text-sm font-normal text-gray-700">Report ID</label>
+            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.report_id} readOnly />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Doctor ID</label>
-            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.doctorId} readOnly />
+            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.doctor_id} readOnly />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Treatment ID</label>
-            <input type="text" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.treatmentId} readOnly />
+            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.treatment_id} readOnly />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Main Report ID</label>
-            <input type="text" className="mt-1  pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.mainReportId} readOnly />
+            <label className="block text-sm font-medium text-gray-700 ">Main Report ID</label>
+            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.MainReport_id} readOnly />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Report Date</label>
-            <input type="date" className="mt-1 pl-2 h-8  block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportDate} readOnly />
+            <input type="date" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.report_date} readOnly />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Report type</label>
-            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.reportType} readOnly />
+            <label className="block text-sm font-medium text-gray-700">Report Type</label>
+            <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.report_type} readOnly />
           </div>
         </div>
 
         <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700">Report description</label>
-          <textarea className="mt-1 block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.reportDescription} readOnly></textarea>
+          <label className="block text-sm font-medium text-gray-700">Report Description</label>
+          <textarea className="mt-1 block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.report_description} readOnly></textarea>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
@@ -149,19 +169,19 @@ export default function ReportResult() {
             <label className="block text-sm font-medium text-gray-700">Paid</label>
             <input type="text" className="mt-1 pl-2 h-8 block w-full border rounded-md shadow-sm bg-gray-100" value={currentReport.paid} readOnly />
           </div>
-          <div></div> 
+          <div></div>
         </div>
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700">Status</label>
-          <textarea className="mt-1 pl-2  block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.status} readOnly></textarea>
+          <textarea className="mt-1 pl-2 block w-full border rounded-md shadow-sm bg-gray-100" rows={3} value={currentReport.status} readOnly></textarea>
         </div>
- 
+
         <hr className="border-t-1 border-gray-400 my-4" />
 
         <table className="w-full mt-3">
           <thead className='bg-rose-100'>
             <tr>
-              <th className="text-left pb-2 ">Observation Name</th>
+              <th className="text-left pb-2">Observation Name</th>
               <th className="text-left pb-2">Observation Value</th>
               <th className="w-10">
                 <button onClick={handleAddObservation} className="bg-green-500 text-white p-2 rounded">
@@ -183,17 +203,16 @@ export default function ReportResult() {
               </tr>
             ))}
           </tbody>
-        
         </table>
         <hr className="border-t-1 border-gray-400 my-4" />
-        <div className="mt-6 flex justify-center">
-          <button onClick={handleSave} className="bg-green-500 text-white px-8 py-4 text-xl rounded-xl">
-            Save
+        <div className="flex justify-end mt-4">
+          <button onClick={handleSubmit} className="bg-blue-500 text-white px-4 py-2 rounded">
+            Submit Observations
           </button>
         </div>
       </div>
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50  flex items-center justify-center">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg">
             <h2 className="text-xl font-bold mb-4">Add Observation</h2>
             <input
@@ -206,7 +225,7 @@ export default function ReportResult() {
             <input
               type="text"
               placeholder="Observation Value"
-              className="block w-full border  pl-2 h-8 rounded-md shadow-sm mb-4"
+              className="block w-full border pl-2 h-8 rounded-md shadow-sm mb-4"
               value={newObservation.value}
               onChange={(e) => setNewObservation({ ...newObservation, value: e.target.value })}
             />
@@ -218,6 +237,5 @@ export default function ReportResult() {
         </div>
       )}
     </div>
-    
-  )
+  );
 }

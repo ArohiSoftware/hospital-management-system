@@ -45,8 +45,7 @@ export const updateAdvertisement = (advertisementData) => async (dispatch) => {
     
     console.log("update id", id, advertisementData);
     
-    // Make sure to include the correct advertisement data in the API request
-    const formData = new FormData();
+     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('advertise_img', advertise_img);

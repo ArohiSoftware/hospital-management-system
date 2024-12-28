@@ -13,7 +13,7 @@ export const getPatientByName = async (req, res) => {
     const patients = await prisma.petients.findMany({
       where: {
         fullName: {
-          contains: name,       // Match names starting with the 'name' value
+          startsWith: name,       // Match names starting with the 'name' value
           mode: 'insensitive',    // Case-insensitive matching
         },
       },

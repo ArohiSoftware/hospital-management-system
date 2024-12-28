@@ -12,6 +12,9 @@ export const createAccount = (formData, onSuccess) => async (dispatch) => {
 
   try {
     const response = await axiosInstanceWeb.post('/marketing/create', formData);
+
+    console.log("accountData",response)
+    localStorage.setItem("token",response.data.token)
     
     dispatch({ type: CREATE_ACCOUNT_SUCCESS, payload: response.data });
     

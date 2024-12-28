@@ -1,0 +1,3 @@
+import { getAllMedicalReports,deleteMedicalReport,getMedicalReportById,updateMedicalReport,createMedicalReport,getMedicalReportByPateintName } from "./medicalReport.js";
+
+export {getAllMedicalReports,deleteMedicalReport,getMedicalReportById,updateMedicalReport,createMedicalReport,getMedicalReportByPateintName};

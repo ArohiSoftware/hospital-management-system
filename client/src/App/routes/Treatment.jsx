@@ -9,6 +9,8 @@ import MedicalReportSystem from '../components/MedicalReportSystem/MedicalReport
 import LabReportRoute from '../components/LabReport/LabReportRoute.jsx'
 
 export default function TreatmentRoute() {
+
+  
   return (
 
     

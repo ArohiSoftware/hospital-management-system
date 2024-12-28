@@ -19,7 +19,7 @@ export const createClientSubscription = async (req, res) => {
     try {
         const { clientId, startDate, endDate, paymentStatus, subscriptionStatus,
             //  subscriptionPlanId
-             } = req.body;
+        } = req.body;
         console.log(req.body)
 
         if (!clientId) {

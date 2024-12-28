@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import notification from "../../assets/images/notifications_none.png";
 import darkmode from "../../assets/images/moon-solid_1.png";
 import lightmode from "../../assets/images/sun-solid.png";
 import about from "../../assets/images/info_outline.png";
-import Doctor from "../../assets/images/dr.png";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getprofile } from "../../redux/actions/StaffProfileAction";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -53,7 +55,7 @@ const Navbar = () => {
       </h1>
 
       {/* OPD and IPD Section */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-2 mx-1">
         <button
           className={`px-5 py-2 font-semibold text-sm rounded-full transition-all duration-200 ${
             selectedSection === "OPD"
@@ -106,9 +108,23 @@ const Navbar = () => {
           onClick={toggleDarkMode}
         />
         <img src={about} alt="Information" className="w-6 h-6 cursor-pointer" />
-        <div className="w-10 h-10 rounded-full overflow-hidden">
-          <img src={Doctor} alt="Doctor Avatar" className="w-full h-full" />
+
+
+
+        <div className="w-10 h-10 px-[10px] py-2 font-bold text-white rounded-full  bg-red-600 overflow-hidden">
+         <Link to='/dashboard/Myprofile'>
+         {user ? (
+              <h1 className=" mx-auto rounded-full ">
+                {Userprofile ? `${Userprofile[0].toUpperCase()}${firstCharAfterSpace}` : "?"}
+              </h1>
+            ) : (
+              <div className="w-6 h-6 rounded-full"></div>
+            )}
+          {/* <img src={Doctor} alt="Doctor Avatar" className="w-full h-full" /> */}
+         </Link>
         </div>
+
+
       </div>
     </header>
   );

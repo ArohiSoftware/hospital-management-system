@@ -5,11 +5,19 @@ import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 10; // Number of salt rounds for hashing
 const SECRET_KEY = 'your_secret_key'; // Replace this with your actual secret key
-
 export const updateStaff = async (req, res) => {
     const { id } = req.params;
-    const { full_name, specialization, user, password, type, contact_number, email, qualifications, department } = req.body;
+    console.log('Request params:', req.params);
 
+console.log("staffid",id)
+    // Ensure the ID is valid (e.g., a number)
+    if (!id || isNaN(parseInt(id))) {
+        return res.status(400).json({ error: 'Invalid staff ID' });
+    }
+
+    const { fullName, specialization, user, password, type, contact_number, email, qualifications, department  , role} = req.body;
+
+    console.log('Request body:', req.body);
     try {
         // Combine the password with the secret key
         const passwordWithKey = `${password}${SECRET_KEY}`;
@@ -18,9 +26,9 @@ export const updateStaff = async (req, res) => {
         const hashedPassword = await bcrypt.hash(passwordWithKey, SALT_ROUNDS);
 
         const updatedStaff = await prisma.staff.update({
-            where: { Staff_id: BigInt(id) },
+            where: { id: parseInt(id) },
             data: {
-                full_name,
+                fullName,
                 specialization,
                 user,
                 password: hashedPassword, // Save the hashed password
@@ -29,22 +37,12 @@ export const updateStaff = async (req, res) => {
                 email,
                 qualifications,
                 department,
+                role,
                 updated_at: new Date(), // Update the timestamp
             },
         });
 
-        // Function to serialize staff data
-        const serializeStaff = (staff) => {
-            return {
-                ...staff,
-                Staff_id: staff.Staff_id !== undefined && staff.Staff_id !== null ? staff.Staff_id.toString() : null, // Convert BigInt to string if it exists
-                created_at: staff.created_at !== undefined && staff.created_at !== null ? staff.created_at.toISOString() : null, // Convert Date to ISO string if it exists
-                updated_at: staff.updated_at !== undefined && staff.updated_at !== null ? staff.updated_at.toISOString() : null  // Convert Date to ISO string if it exists
-            };
-        };
-
-        const serializedUpdatedStaff = serializeStaff(updatedStaff);
-        return res.json(serializedUpdatedStaff);
+        return res.json(updatedStaff);
     } catch (error) {
         console.error('Error updating staff:', error.message);
         return res.status(500).json({ error: 'Error updating staff' });

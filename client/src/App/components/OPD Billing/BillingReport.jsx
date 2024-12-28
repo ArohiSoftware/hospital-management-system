@@ -1,13 +1,26 @@
 import React, { useState } from "react";
-import Sidebar from "../SideBar/Sidebar";
-import Navbar from "../Navbar/Navbar";
-
+import { PlusIcon, MinusIcon, X } from "lucide-react";
 
 const BillingReport = () => {
   const [patientName, setPatientName] = useState("");
   const [patientId, setPatientId] = useState("");
   const [treatmentId, setTreatmentId] = useState("");
   const [type, setType] = useState("OPD");
+  const [showPopup, setShowPopup] = useState(false);
+
+  const [billId, setBillId] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  const [amountPaid, setAmountPaid] = useState("");
+  const [payerName, setPayerName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+
+  const handleAdvanceBill = () => {
+    setShowPopup(true);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
   const billingData = {
     billingId: "LSOEDUJ85",
@@ -32,16 +45,19 @@ const BillingReport = () => {
   );
   const sgst = (billingData.totalAmount * 0.08).toFixed(2);
   const cgst = (billingData.totalAmount * 0.08).toFixed(2);
-  const totalWithGST = (billingData.totalAmount + parseFloat(sgst) + parseFloat(cgst)).toFixed(2);
-  
+  const totalWithGST = (
+    billingData.totalAmount +
+    parseFloat(sgst) +
+    parseFloat(cgst)
+  ).toFixed(2);
+
   return (
-    
     <div className="min-h-screen bg-opacity-80 pt-10 flex">
       {/* Left side blank div taking 20% width */}
       {/* <div className="w-1/5"></div> */}
 
       {/* Right side (content) taking 80% width */}
-      <div className="w-[85%] max-w-7xl mx-auto"> 
+      <div className="w-[85%] max-w-7xl mx-auto">
         <div className=" p-4 rounded-t-md ">
           <h1 className="text-3xl font-bold dark:text-white">Billing </h1>
           <div className="flex justify-between mt-2">
@@ -122,6 +138,14 @@ const BillingReport = () => {
                 <th className="p-2 text-left">S.no.</th>
                 <th className="p-2 text-left">Particulars</th>
                 <th className="p-2 text-right">Amount</th>
+                <th className="w-10">
+                  <button
+                    onClick={handleAdvanceBill}
+                    className="bg-green-500 text-white p-2 rounded"
+                  >
+                    <PlusIcon className="w-5 h-5" />
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -165,9 +189,76 @@ const BillingReport = () => {
             Create Billing Report
           </button>
         </div>
+
+        {/* {popup } */}
+        {showPopup && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50" onClick={closePopup}>
+            <div className="bg-white p-6 rounded-md w-96" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold">Add Advance Bill</h2>
+                <button className="text-red-500" onClick={closePopup}>
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="mt-4">
+                <input
+                  className="w-full p-2 border rounded mb-2"
+                  type="text"
+                  placeholder="Bill ID"
+                  value={billId}
+                  onChange={(e) => setBillId(e.target.value)}
+                />
+                <input
+                  className="w-full p-2 border rounded mb-2 placeholder-gray-400"
+                  type="text"
+                  placeholder="Payment Date"
+                  onFocus={(e) => {
+                    e.target.type = "date";
+                    e.target.placeholder = ""; // Clear the placeholder on focus
+                  }}
+                  onBlur={(e) => {
+                    if (!e.target.value) {
+                      e.target.type = "text";
+                      e.target.placeholder = "dd-mm-yyyy"; // Reset the placeholder if empty
+                    }
+                  }}
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
+                />
+
+                <input
+                  className="w-full p-2 border rounded mb-2"
+                  type="text"
+                  placeholder="Amount Paid"
+                  value={amountPaid}
+                  onChange={(e) => setAmountPaid(e.target.value)}
+                />
+                <input
+                  className="w-full p-2 border rounded mb-2"
+                  type="text"
+                  placeholder="Payer Name"
+                  value={payerName}
+                  onChange={(e) => setPayerName(e.target.value)}
+                />
+                <input
+                  className="w-full p-2 border rounded mb-2"
+                  type="text"
+                  placeholder="Payment Method"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+              </div>
+              <button
+                className="mt-4 w-full bg-green-500 text-white p-2 rounded"
+                onClick={closePopup}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-    
   );
 };
 
