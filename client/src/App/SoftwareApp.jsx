@@ -3,13 +3,13 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 // import Dashboard from "./pages/Dashbord";
 import OPD from "./pages/OPD";
-// import IPD from "./pages/Ipd";
-import IPD from "./components/IPD/IPD";
+import IPD from "./pages/IPD";
+import Ipd from "./components/IPD/IPD";
 import Dashboard from "./pages/Dashbord";
 import Graphs from "./components/graph/graph";
 import PatientRegistrationForm from "./components/PatientRegistrationForm/PatientRegistrationForm";
 import Appointment from "./components/Appointment/Appointment";
-import Ipd from "./pages/IPD";
+//import Ipd from "./pages/IPD";
 import PatientCard from "./components/History/PatientCard";
 import MainMedicalReport from "./components/MedicalReportSystem/MainMedicalReport";
 import Medication from "./components/Medication/Medication";
@@ -37,7 +37,8 @@ function SoftwareApp() {
         <Route path="Billing" element={<BillingReport />} />
         <Route path="AppointmentList/*" element={<AppointmentList/>} />
       </Route>
-      <Route path="/ipd" element={<Ipd />}>
+      <Route path="/ipd" element={<IPD />}>
+      <Route path="" element={<Ipd />} />
         <Route path="" element={<PatientRegistrationForm />} />
         <Route path="Appointment" element={<Appointment />} />
       </Route>
